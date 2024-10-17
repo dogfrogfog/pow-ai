@@ -77,7 +77,11 @@ const PDFDocument = ({ content }: { content: string }) => (
 export function DocumentCreation({
   saveToRedis,
 }: {
-  saveToRedis: (prompt: string, completion: string) => Promise<string>;
+  saveToRedis: (
+    prompt: string,
+    completion: string,
+    selectedLanguage: string
+  ) => Promise<void>;
 }) {
   const [selectedLanguage, setSelectedLanguage] = useState<string>("");
   const [prompt, setPrompt] = useState<string>("");
@@ -89,7 +93,11 @@ export function DocumentCreation({
     api: "/api/generate",
     onFinish: async (prompt: string, completion: string) => {
       try {
-        const documentId = await saveToRedis(prompt, completion);
+        const documentId = await saveToRedis(
+          prompt,
+          completion,
+          selectedLanguage
+        );
         console.log(`Document saved with ID: ${documentId}`);
       } catch (error) {
         console.error("Error saving document:", error);

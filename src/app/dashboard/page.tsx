@@ -5,6 +5,7 @@ import { SubscriptionButton } from "@/components/subscription-button";
 import Link from "next/link";
 import { stripe } from "@/lib/stripe";
 import { redirect } from "next/navigation";
+import redis from "@/lib/redis";
 
 async function getActiveSubscription(stripeCustomerId: string | undefined) {
   if (!stripeCustomerId) return null;
@@ -36,9 +37,18 @@ export default async function Dashboard() {
     | undefined;
   const activeSubscription = await getActiveSubscription(stripeCustomerId);
 
-  async function saveToRedis(prompt: string, completion: string) {
+  async function saveToRedis(
+    prompt: string,
+    completion: string,
+    selectedLanguage: string
+  ) {
     "use server";
-    // Implement your Redis saving logic here
+
+    const uuid = crypto.randomUUID();
+    await redis.set(
+      uuid,
+      JSON.stringify({ code: completion, language: selectedLanguage })
+    );
   }
 
   async function createPortalSession() {

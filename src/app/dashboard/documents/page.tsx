@@ -32,6 +32,8 @@ export default async function DocumentsPage() {
   async function deleteDocument(documentId: string) {
     "use server";
 
+    if (!userId) return;
+
     // Delete the document from Redis
     await redis.del(documentId);
 
